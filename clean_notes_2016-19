@@ -1,0 +1,21 @@
+library(readr)
+library(stringr)
+
+
+
+
+ed_notes3 <- read_delim("C:\\Users\\Use This\\Downloads\\ED_Notes2019.txt","~!", escape_double = FALSE, trim_ws = TRUE)
+
+cleanFun <- function(htmlString) {return(gsub("<.*?>", "", htmlString))}
+
+cleanFun2 <- function(htmlString) {return(gsub("&nbsp;|&#183;", " ", htmlString))}
+
+cleanFun3 <- function(htmlString) {return(gsub(".*?>|<span*.", "", htmlString))}
+new_text <- cleanFun(ed_notes3$`TEXT`[3271155:7868048])
+new_text <- cleanFun2(new_text)
+new_text <- cleanFun3(new_text)
+
+new_text <- str_replace_all( new_text, "[^[:alnum:]]", " ")
+new_text  <- tolower(new_text )
+df <- data.frame("Note" = new_text)
+write.csv(df,"C:\\Users\\Use This\\Desktop\\clean2019notes.csv")
