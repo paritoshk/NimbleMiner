@@ -1,21 +1,26 @@
 library(readr)
 library(stringr)
+library(lubridate)
+library(dplyr)
+library(anytime)
 
 
 
-
-ed_notes3 <- read_delim("C:\\Users\\Use This\\Downloads\\ED_Notes2019.txt","~!", escape_double = FALSE, trim_ws = TRUE)
+ed_notes3 <- read_delim("/Users/pck2123/Downloads/ED_Notes2016_18.txt","~!", escape_double = FALSE, trim_ws = TRUE)
 
 cleanFun <- function(htmlString) {return(gsub("<.*?>", "", htmlString))}
 
 cleanFun2 <- function(htmlString) {return(gsub("&nbsp;|&#183;", " ", htmlString))}
 
 cleanFun3 <- function(htmlString) {return(gsub(".*?>|<span*.", "", htmlString))}
-new_text <- cleanFun(ed_notes3$`TEXT`[3271155:7868048])
+#df <- data.frame(ed_notes3)
+ed_notes3 %>% arrange(desc(mdy(ed_notes3$PRIMARY_TIME)))
+new_text <- cleanFun(ed_notes3$TEXT[1:4000000])
 new_text <- cleanFun2(new_text)
 new_text <- cleanFun3(new_text)
 
 new_text <- str_replace_all( new_text, "[^[:alnum:]]", " ")
 new_text  <- tolower(new_text )
-df <- data.frame("Note" = new_text)
-write.csv(df,"C:\\Users\\Use This\\Desktop\\clean2019notes.csv")
+df <- data.frame("Note" = new_text,"MRN" = ed_notes3$MRN[1:4000000], "date_primary" = ed_notes3$PRIMARY_TIME[1:4000000])
+#df %>% arrange(desc(mdy(df$date_primary)))
+write.csv(df,"clean2018_16notes.csv")
